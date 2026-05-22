@@ -21,6 +21,7 @@ import {
 import CreateFileDialog from "./CreateFileDialog";
 import RenameDialog from "./RenameDialog";
 import DeleteDialog from "./DeleteDialog";
+import FileEditor from "./FileEditor";
 
 interface MainPanelProps {
   data: FileNode[];
@@ -40,7 +41,7 @@ export default function MainPanel({
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [activeNode, setActiveNode] = useState<FileNode | null>(null);
-
+  const [editingFile, setEditingFile] = useState<FileNode | null>(null);
   // Find the currently selected folder's data
   const currentFolder = findNodeById(data, selectedFolderId);
 
@@ -53,6 +54,30 @@ export default function MainPanel({
     );
   }
 
+  // Function to update file content deep in the tree
+  const updateFileContent = (
+    nodes: FileNode[],
+    fileId: string,
+    newContent: string,
+  ): FileNode[] => {
+    return nodes.map((node) => {
+      if (node.id === fileId) {
+        return { ...node, content: newContent };
+      }
+      if (node.children) {
+        return {
+          ...node,
+          children: updateFileContent(node.children, fileId, newContent),
+        };
+      }
+      return node;
+    });
+  };
+
+  const handleSave = (id: string, newContent: string) => {
+    setFileData((prev) => updateFileContent(prev, id, newContent));
+    setEditingFile(null); // Close editor after save
+  };
   return (
     <div className="flex-1 flex flex-col bg-background min-w-0">
       {/* --- Responsive Header Area --- */}
@@ -91,7 +116,11 @@ export default function MainPanel({
               <div
                 key={item.id}
                 onDoubleClick={() => {
-                  if (item.type === "folder") setSelectedFolderId(item.id);
+                  if (item.type === "folder") {
+                    setSelectedFolderId(item.id);
+                  } else {
+                    setEditingFile(item);
+                  }
                 }}
                 className="group relative flex flex-col items-center p-3 sm:p-4 rounded-xl border bg-card hover:bg-accent/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer"
               >
@@ -155,6 +184,13 @@ export default function MainPanel({
               Create something new
             </button>
           </div>
+        )}
+        {editingFile && (
+          <FileEditor
+            file={editingFile}
+            onClose={() => setEditingFile(null)}
+            onSave={handleSave}
+          />
         )}
       </div>
 
