@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FileNode } from "@/types/file-system";
 import { ChevronRight, ChevronDown, Folder, FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const TreeNode = ({
   node,
@@ -44,7 +43,7 @@ const TreeNode = ({
         <span className="truncate">{node.name}</span>
       </div>
 
-      {/* রিকার্সন পার্ট: যদি ফোল্ডার ওপেন থাকে তবে তার চিলড্রেন দেখাও */}
+      {/* If it's a folder and is open, render its children */}
       {isOpen && node.children && (
         <div className="border-l ml-2">
           {node.children.map((child) => (
