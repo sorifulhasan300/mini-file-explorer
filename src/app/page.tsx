@@ -11,12 +11,10 @@ export default function FileExplorer() {
 
   return (
     <main className="flex h-screen w-full bg-background overflow-hidden">
-      {/* বাম পাশ: সাইডবার */}
       <div className="w-64 border-r bg-muted/30">
         <Sidebar data={fileData} setSelectedFolderId={setSelectedFolderId} />
       </div>
 
-      {/* ডান পাশ: মেইন কন্টেন্ট */}
       <div className="flex-1 flex flex-col">
         <MainPanel
           data={fileData}
