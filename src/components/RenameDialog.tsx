@@ -56,13 +56,13 @@ export default function RenameDialog({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border rounded-md"
+              className="px-4 py-2 border rounded-md cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-primary text-white rounded-md"
+              className="px-4 py-2 bg-primary text-white rounded-md cursor-pointer"
             >
               Save
             </button>

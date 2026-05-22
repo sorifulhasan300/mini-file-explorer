@@ -12,7 +12,7 @@ export default function FileExplorer() {
   const [selectedFolderId, setSelectedFolderId] = useState<string>("root");
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // ১. মাউন্ট হওয়ার সময় LocalStorage থেকে ডেটা লোড করা
+  // Load data from LocalStorage on mount
   useEffect(() => {
     const savedData = localStorage.getItem("file-explorer-data");
     if (savedData) {
@@ -23,6 +23,7 @@ export default function FileExplorer() {
     setIsLoaded(true);
   }, []);
 
+  // Save data to LocalStorage whenever fileData changes
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem("file-explorer-data", JSON.stringify(fileData));
@@ -32,19 +33,24 @@ export default function FileExplorer() {
   if (!isLoaded) return null;
 
   return (
-    <main className="flex h-screen w-full bg-background overflow-hidden">
-      {/* --- Sidebar --- */}
-      <div className="w-64 border-r">
+    <main className="flex h-screen w-full bg-background overflow-hidden relative">
+      <aside className="hidden md:block w-64 border-r flex-shrink-0">
         <Sidebar data={fileData} setSelectedFolderId={setSelectedFolderId} />
-      </div>
+      </aside>
 
-      {/* --- Main Panel --- */}
-      <MainPanel
-        data={fileData}
-        selectedFolderId={selectedFolderId}
-        setFileData={setFileData}
-        setSelectedFolderId={setSelectedFolderId}
-      />
+      <section className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        {/* Render mobile drawer trigger inside Sidebar component */}
+        <div className="md:hidden">
+          <Sidebar data={fileData} setSelectedFolderId={setSelectedFolderId} />
+        </div>
+
+        <MainPanel
+          data={fileData}
+          selectedFolderId={selectedFolderId}
+          setFileData={setFileData}
+          setSelectedFolderId={setSelectedFolderId}
+        />
+      </section>
     </main>
   );
 }

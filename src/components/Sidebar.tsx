@@ -1,13 +1,30 @@
+"use client";
+
 import { useState } from "react";
 import { FileNode } from "@/types/file-system";
-import { ChevronRight, ChevronDown, Folder, FileText } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronDown,
+  Folder,
+  FileText,
+  Menu,
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const TreeNode = ({
   node,
   setSelectedFolderId,
+  onSelect,
 }: {
   node: FileNode;
   setSelectedFolderId: (id: string) => void;
+  onSelect?: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren =
@@ -16,7 +33,7 @@ const TreeNode = ({
   return (
     <div className="pl-4">
       <div
-        className="flex items-center gap-2 py-1 px-2 hover:bg-accent rounded-sm cursor-pointer text-sm"
+        className="flex items-center gap-2 py-1.5 px-2 hover:bg-accent rounded-sm cursor-pointer text-sm"
         onClick={() => {
           if (node.type === "folder") {
             setIsOpen(!isOpen);
@@ -43,7 +60,6 @@ const TreeNode = ({
         <span className="truncate">{node.name}</span>
       </div>
 
-      {/* If it's a folder and is open, render its children */}
       {isOpen && node.children && (
         <div className="border-l ml-2">
           {node.children.map((child) => (
@@ -51,6 +67,7 @@ const TreeNode = ({
               key={child.id}
               node={child}
               setSelectedFolderId={setSelectedFolderId}
+              onSelect={onSelect}
             />
           ))}
         </div>
@@ -59,6 +76,7 @@ const TreeNode = ({
   );
 };
 
+// Main Sidebar Component
 export default function Sidebar({
   data,
   setSelectedFolderId,
@@ -66,8 +84,10 @@ export default function Sidebar({
   data: FileNode[];
   setSelectedFolderId: (id: string) => void;
 }) {
-  return (
-    <div className="py-4 overflow-y-auto h-full">
+  const [open, setOpen] = useState(false);
+
+  const SidebarContent = (
+    <div className="py-4 h-full overflow-y-auto">
       <h2 className="px-6 mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         Explorer
       </h2>
@@ -76,8 +96,35 @@ export default function Sidebar({
           key={node.id}
           node={node}
           setSelectedFolderId={setSelectedFolderId}
+          onSelect={() => setOpen(false)}
         />
       ))}
     </div>
+  );
+
+  return (
+    <>
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <button className="p-2 bg-background border rounded-md shadow-sm">
+              <Menu size={20} />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-0">
+            <SheetHeader className="p-6 border-b">
+              <SheetTitle className="flex items-center gap-2">
+                <Folder size={20} className="text-blue-500" /> File Explorer
+              </SheetTitle>
+            </SheetHeader>
+            {SidebarContent}
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      <div className="hidden md:block w-full h-full border-r bg-muted/20">
+        {SidebarContent}
+      </div>
+    </>
   );
 }

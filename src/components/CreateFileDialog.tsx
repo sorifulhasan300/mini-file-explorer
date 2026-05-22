@@ -113,14 +113,14 @@ export default function CreateFileDialog({
           <DialogFooter className="pt-4">
             <button
               type="button"
-              className="px-4 py-2 text-sm font-medium border rounded-md hover:bg-accent"
+              className="cursor-pointer px-4 py-2 text-sm font-medium border rounded-md hover:bg-accent"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90"
+              className="cursor-pointer px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90"
             >
               Create
             </button>
