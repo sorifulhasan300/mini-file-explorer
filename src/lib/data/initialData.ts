@@ -1,6 +1,6 @@
 import { FileNode } from "@/types/file-system";
 
-const initialData: FileNode[] = [
+export const initialData: FileNode[] = [
   {
     id: "root",
     name: "Root",
